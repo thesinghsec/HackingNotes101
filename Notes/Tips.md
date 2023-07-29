@@ -1,16 +1,9 @@
 ### Stablize Shell
 
-```
-# In order to make a stable shell we need to run:
-
+```bash
 python -c 'import pty; pty.spawn("/bin/bash")'
 
-# Background the active shell using ctrl+z and use cmds
+ctrl+z
 
-stty raw -echo
-fg
-
-www-data@40ad97ed7351:/var/www/admin$ whoami
-whoami
-www-data
+stty raw -echo;fg
 ```
