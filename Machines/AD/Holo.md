@@ -68,3 +68,16 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ```bash
 └─$ gobuster vhost -u http://holo.live -w /usr/share/seclists/SecLists-master/Discovery/DNS/subdomains-top1million-110000.txt
+
+Found: dev.holo.live
+Found: admin.holo.live
+```
+- Found **robots.txt** on **admin.holo.live/robots.txt**
+```text
+User-agent: *
+Disallow: /var/www/admin/db.php
+Disallow: /var/www/admin/dashboard.php
+Disallow: /var/www/admin/supersecretdir/creds.txt
+```
+
+
