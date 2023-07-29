@@ -7,3 +7,8 @@ ctrl+z
 
 stty raw -echo;fg
 ```
+### Port Scanning with NetCat
+
+```bash
+nc -zv <IP> 1-65535
+```
