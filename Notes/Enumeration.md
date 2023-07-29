@@ -1,10 +1,10 @@
 # Initial Enumeration
 
-### Vhost discovery
+### Vhost discovery:
 
 **Gobuster:**
 ```bash
-└─$ gobuster vhost -u http://<address> -w /usr/share/seclists/SecLists-master/Discovery/DNS/subdomains-top1million-110000.txt
+gobuster vhost -u <URL to fuzz> -w <wordlist>
 ```
 **WFUZZ**
 ```bash
