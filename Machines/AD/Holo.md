@@ -120,7 +120,7 @@ www-data
 ```
 - In order to make a stable shell we need to run:
 ```python3
-python -c 'import pty; pty.spawn("/bin/bash")'
+python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 - Background the active shell using ctrl+z and use cmds
 
