@@ -1,4 +1,4 @@
-### Stablize Shell
+# Stablize Shell
 
 ```bash
 python -c 'import pty; pty.spawn("/bin/bash")'
@@ -7,11 +7,16 @@ ctrl+z
 
 stty raw -echo;fg
 ```
-### Port Scanning with NetCat
+# Port Scanning with NetCat
 
 ```bash
 nc -zv <IP> 1-65535
 ```
+# Find SUID bit.
+```bash
+find / -perm -u=s -type f 2>/dev/null
+```
+
 # Using rpcclient options got user list:
 ```bash
 └─$ rpcclient -U "" -N 10.10.10.100
