@@ -11,6 +11,10 @@ stty raw -echo;fg
 ```bash
 netsh advfirewall set allprofiles state off
 ```
+# Remote Desktop Connection:
+```bash
+net localgroup "Remote Desktop Users" Everyone /Add
+```
 
 # Port Scanning with NetCat
 
