@@ -7,6 +7,11 @@ ctrl+z
 
 stty raw -echo;fg
 ```
+# Turn Firewall off on windows:
+```bash
+netsh advfirewall set allprofiles state off
+```
+
 # Port Scanning with NetCat
 
 ```bash
