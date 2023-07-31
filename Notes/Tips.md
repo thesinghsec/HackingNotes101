@@ -13,6 +13,7 @@ stty raw -echo;fg
 nc -zv <IP> 1-65535
 ```
 # Internal Network access using Chisel (Reverse Connection):
+> Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
 - On the local machine:
 ```bash
 ./chisel server -p 8000 --reverse
