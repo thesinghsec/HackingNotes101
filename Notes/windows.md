@@ -52,8 +52,11 @@ net localgroup "Remote Desktop Users" Everyone /Add
 # Bypass Windows Applocker
 
 - Location.
+
  `C:\Windows\System32\spool\drivers\color`
+ 
  - [applocker-bypas-checker.ps1](https://github.com/sparcflow/GibsonBird/blob/master/chapter4/applocker-bypas-checker.ps1) is a powershell script that returns folders for bypass applocker.
+
 ```powershell
   .\applocker.ps1
 [*] Processing folders recursively in C:\windows
