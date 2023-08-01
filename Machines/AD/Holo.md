@@ -410,7 +410,8 @@ Host script results:
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/593582a0-eddf-4b88-88df-9675518a6a46)
 
-- Login using the credentials of user gurag.
+- Paste the token next to the **token=** in the URL and reset the password.
+- Now, log in using the credentials of user gurag.
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/d05cfd45-6024-4543-99bf-8638f06d7f25)
 
