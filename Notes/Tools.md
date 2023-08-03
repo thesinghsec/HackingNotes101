@@ -30,7 +30,7 @@ nc -zv <IP> 1-65535
 ```
 # Internal Network access using SShuttle:
 ```bash
-└─$ sudo sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
+└─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
 ```
 # Windows Enumeration using SEATBELT
 ```powershell
