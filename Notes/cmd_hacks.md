@@ -19,7 +19,7 @@ wfuzz -u <http://example.com/?FUZZ=ls+-la> -w <wordlist> --hw 2
 nc -zv <IP> 1-65535
 ```
 # Internal Network Acess (Reverse Port Forwarding)
-- #### Chisel (Reverse Connection):
+#### Chisel (Reverse Connection):
 > Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
 - On the local machine:
 ```bash
@@ -29,12 +29,12 @@ nc -zv <IP> 1-65535
 ```bash
 ./chisel client <LHOST>:8000 R:socks
 ```
-- #### Internal Network access using SShuttle:
+#### Internal Network access using SShuttle:
 ```bash
 └─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
 ```
 
-- #### Reverse Port forward using OpenSSH
+#### Reverse Port forward using OpenSSH
 ```powershell
 ssh-keygen  # Generate key
 ```
