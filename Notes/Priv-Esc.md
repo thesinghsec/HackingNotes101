@@ -2,6 +2,8 @@
 ```bash
 python -c 'import pty; pty.spawn("/bin/bash")'
 
+export TERM=xterm
+
 ctrl+z
 
 stty raw -echo;fg
