@@ -8,6 +8,16 @@
     - Etc
 - #### Think outside the box
 
+# Post-Compromise AD Enumeration
+- #### We have compromised a user. Now what?
+- #### There are few tools that offer quick and efficient enumeration
+     - Bloodhound
+     - Plumhound
+     - Ldapdomaindump
+     - PingCastle
+     - And whatever You like.
+  
+
 # Post-Compromise Attack Strategy
 - #### We have an account, now what?
 - #### Search for quick wins:
