@@ -59,6 +59,12 @@ secretsdump.py <domain>/<user>:<password>@<target IP>
 
 secretsdump.py <user>:@<IP> -hashes <hash>
 ```
+# Ldapdomaindump
+```bash
+sudo ldapdomaindump ldaps://<IP> -u '<DOMAIN>/<USER>' -p <password>
+```
+
+
 # Kerberosting
 - Using **GetUserSPNs**
 ```bash
