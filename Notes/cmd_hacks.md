@@ -18,6 +18,11 @@ wfuzz -u <http://example.com/?FUZZ=ls+-la> -w <wordlist> --hw 2
 ```bash
 nc -zv <IP> 1-65535
 ```
+# Open Port in the firewall
+```bash
+firewall-cmd --zone=public --add-port PORT/tcp
+```
+
 # Internal Network Acess (Reverse Port Forwarding)
 #### Chisel (Reverse Connection):
 > Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
