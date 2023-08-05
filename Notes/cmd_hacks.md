@@ -31,7 +31,9 @@ nc -zv <IP> 1-65535
 ```
 #### Internal Network access using SShuttle:
 ```bash
-└─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>
+└─$ sshuttle -r <username>@<RHOST> <Internal IP/Subnet>    # Using credentials
+
+└─# sshuttle -r root@10.200.96.200 --ssh-cmd "ssh -i id_rsa" 10.200.96.0/24    # using private key
 ```
 
 #### Reverse Port forward using OpenSSH
