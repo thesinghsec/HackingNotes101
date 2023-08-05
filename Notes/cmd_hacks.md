@@ -21,6 +21,11 @@ nc -zv <IP> 1-65535
 # Open Port in the firewall
 ```bash
 firewall-cmd --zone=public --add-port PORT/tcp
+
+
+# Using netsh
+
+netsh advfirewall firewall add rule name="Chisel" dir=in action=allow protocol=tcp localport=PORT
 ```
 # Powershell Reverse Shell
 ```powershell
